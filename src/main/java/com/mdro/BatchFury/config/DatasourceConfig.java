@@ -1,4 +1,8 @@
 package com.mdro.BatchFury.config;
+
+import com.mdro.BatchFury.constant.DataSourceBeanNames;
+import com.mdro.BatchFury.constant.JdbcTemplateBeanNames;
+import com.mdro.BatchFury.constant.TransactionManagerBeanNames;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -7,53 +11,76 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
 @Configuration
 public class DatasourceConfig {
 
-    // ✅ Primary DataSource (Database Remote B) for Spring Batch Metadata
+    // ========================== METADATA (Batch) ===============================
     @Primary
-    @Bean(name = "dataSource") // Spring Batch expects this bean name!
+    @Bean(name = DataSourceBeanNames.METADATA)
     @ConfigurationProperties(prefix = "spring.datasource")
-    public DataSource batchMetadataDataSource() {
-        return DataSourceBuilder.create()
-                .type(HikariDataSource.class)
-                .build();
+    public DataSource metadataDataSource() {
+        return createDataSource();
     }
 
-    // ✅ DataSource A - PostgreSQL Local untuk Job A
-    @Bean(name = "localDataSource")
+    @Bean(name = TransactionManagerBeanNames.METADATA)
+    public PlatformTransactionManager metadataTransactionManager(
+            @Qualifier(DataSourceBeanNames.METADATA) DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
+    @Bean(name = JdbcTemplateBeanNames.METADATA)
+    public JdbcTemplate metadataJdbcTemplate(
+            @Qualifier(DataSourceBeanNames.METADATA) DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
+    }
+
+    // ========================== LOCAL DATABASE ================================
+    @Bean(name = DataSourceBeanNames.LOCAL)
     @ConfigurationProperties(prefix = "datasource.local")
     public DataSource localDataSource() {
-        return DataSourceBuilder.create()
-                .type(HikariDataSource.class)
-                .build();
+        return createDataSource();
     }
 
-    // ✅ DataSource B - PostgreSQL Remote untuk Job B (data transaksi)
-    @Bean(name = "remoteDataSource")
+    @Bean(name = TransactionManagerBeanNames.LOCAL)
+    public PlatformTransactionManager localTransactionManager(
+            @Qualifier(DataSourceBeanNames.LOCAL) DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
+    @Bean(name = JdbcTemplateBeanNames.LOCAL)
+    public JdbcTemplate localJdbcTemplate(
+            @Qualifier(DataSourceBeanNames.LOCAL) DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
+    }
+
+    // ========================== REMOTE DATABASE ===============================
+    @Bean(name = DataSourceBeanNames.REMOTE)
     @ConfigurationProperties(prefix = "datasource.remote")
     public DataSource remoteDataSource() {
+        return createDataSource();
+    }
+
+    @Bean(name = TransactionManagerBeanNames.REMOTE)
+    public PlatformTransactionManager remoteTransactionManager(
+            @Qualifier(DataSourceBeanNames.REMOTE) DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
+    @Bean(name = JdbcTemplateBeanNames.REMOTE)
+    public JdbcTemplate remoteJdbcTemplate(
+            @Qualifier(DataSourceBeanNames.REMOTE) DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
+    }
+
+    // ========================== HELPER METHOD ================================
+    private DataSource createDataSource() {
         return DataSourceBuilder.create()
                 .type(HikariDataSource.class)
                 .build();
     }
-
-    @Bean(name = "localJdbcTemplate")
-    public JdbcTemplate localJdbcTemplate(@Qualifier("localDataSource") DataSource ds) {
-        return new JdbcTemplate(ds);
-    }
-
-    @Bean(name = "remoteJdbcTemplate")
-    public JdbcTemplate remoteJdbcTemplate(@Qualifier("remoteDataSource") DataSource ds) {
-        return new JdbcTemplate(ds);
-    }
-
-    @Bean(name = "batchJdbcTemplate")
-    public JdbcTemplate batchJdbcTemplate(@Qualifier("dataSource") DataSource ds) {
-        return new JdbcTemplate(ds);
-    }
 }
-
