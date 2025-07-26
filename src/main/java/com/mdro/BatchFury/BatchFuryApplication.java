@@ -1,48 +1,56 @@
 package com.mdro.BatchFury;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDate;
-
+import java.util.Map;
 
 @SpringBootApplication
-@EnableBatchProcessing
 public class BatchFuryApplication implements CommandLineRunner {
 
 	@Autowired
 	private JobLauncher jobLauncher;
 
+	// Semua job Spring Batch Anda akan terinject di sini secara otomatis
 	@Autowired
-	private Job processTransactionsJob;
+	private Map<String, Job> jobs;
 
 	public static void main(String[] args) {
-		System.out.println("Starting Spring Batch Application...");
 		SpringApplication.run(BatchFuryApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println("Executing Spring Batch Job...");
+		String selectedJobName = "processRemoteTransactionsJob"; // Default jika tidak ada --job=
 
-		JobParameters jobParameters = new JobParametersBuilder()
-				.addLong("time", System.currentTimeMillis())
+		for (String arg : args) {
+			if (arg.startsWith("--job=")) {
+				selectedJobName = arg.substring("--job=".length());
+			}
+		}
+
+		if (!jobs.containsKey(selectedJobName)) {
+			System.err.println("❌ Job name tidak ditemukan: " + selectedJobName);
+			System.err.println("✅ Daftar job yang tersedia: " + jobs.keySet());
+			return;
+		}
+
+		Job selectedJob = jobs.get(selectedJobName);
+
+		System.out.println("🚀 Menjalankan job: " + selectedJobName);
+
+		JobParameters params = new JobParametersBuilder()
+				.addLong("timestamp", System.currentTimeMillis()) // Supaya bisa rerun
 				.toJobParameters();
 
-		jobLauncher.run(processTransactionsJob, jobParameters);
+		jobLauncher.run(selectedJob, params);
 
-		System.out.println("Spring Batch Job completed!");
+		System.out.println("✅ Job selesai dijalankan!");
 	}
 }
