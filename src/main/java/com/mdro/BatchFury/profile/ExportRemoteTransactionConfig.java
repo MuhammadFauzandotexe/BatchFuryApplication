@@ -1,6 +1,8 @@
-package com.mdro.BatchFury.config.active;
+package com.mdro.BatchFury.profile;
 
 import com.mdro.BatchFury.constant.BatchBeanNames;
+import com.mdro.BatchFury.constant.DataAccessBeanNames;
+import com.mdro.BatchFury.constant.DataSourceBeanNames;
 import com.mdro.BatchFury.listener.ChunkProgressListener;
 import com.mdro.BatchFury.listener.JobCompletionNotificationListener;
 import com.mdro.BatchFury.listener.StepExecutionInfoListener;
@@ -20,7 +22,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
@@ -28,11 +29,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Configuration
-public class ExportTransactionJobConfig {
+public class ExportRemoteTransactionConfig {
 
     private final DataSource remoteDatasource;
 
-    public ExportTransactionJobConfig(@Qualifier("remoteDataSource") DataSource remoteDatasource) {
+    public ExportRemoteTransactionConfig(@Qualifier(DataAccessBeanNames.DataSource.LOCAL)
+                                         DataSource remoteDatasource) {
         this.remoteDatasource = remoteDatasource;
     }
 

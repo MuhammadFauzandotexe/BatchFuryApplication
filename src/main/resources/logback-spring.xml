@@ -23,12 +23,12 @@
         <appender-ref ref="FILE"/>
     </root>
 
-    <logger name="com.example.batch" level="INFO" additivity="false">
+    <logger name="com.mdro.BatchFury.*" level="INFO" additivity="true">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="org.springframework.batch" level="INFO" additivity="false">
+    <logger name="org.springframework.batch" level="INFO" additivity="true">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </logger>

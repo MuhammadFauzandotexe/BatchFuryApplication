@@ -68,7 +68,7 @@ public class ReportWriter {
         String fileName = String.format("reports/transaction_report_%s.txt", reportDate);
 
         BeanWrapperFieldExtractor<Transaction> fieldExtractor = new BeanWrapperFieldExtractor<>();
-        fieldExtractor.setNames(new String[]{"referenceNumber", "transactionDate", "amount", "accountNumber", "status"});
+        fieldExtractor.setNames(new String[]{"id","referenceNumber", "transactionDate", "amount", "accountNumber", "status"});
 
         DelimitedLineAggregator<Transaction> lineAggregator = new DelimitedLineAggregator<>();
         lineAggregator.setDelimiter("|");
@@ -78,7 +78,7 @@ public class ReportWriter {
                 .name("simpleReportFileWriter")
                 .resource(new FileSystemResource(fileName))
                 .lineAggregator(lineAggregator)
-                .headerCallback(writer -> writer.write("Reference|Date|Amount|Account|Status"))
+                .headerCallback(writer -> writer.write("ID|Reference|Date|Amount|Account|Status"))
                 .build();
     }
 }
