@@ -4,17 +4,30 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Setter
 @Getter
 public class Transaction {
     private Long id;
-    private LocalDateTime transactionDate;
+    private Date transactionDate;
     private String referenceNumber;
     private BigDecimal amount;
     private String accountNumber;
     private String status;
-    private LocalDate partitionDate;
+    private Date partitionDate;
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id=" + id +
+                ", transactionDate=" + transactionDate +
+                ", referenceNumber='" + referenceNumber + '\'' +
+                ", amount=" + amount +
+                ", accountNumber='" + accountNumber + '\'' +
+                ", status='" + status + '\'' +
+                ", partitionDate=" + partitionDate +
+                '}';
+    }
+
 }

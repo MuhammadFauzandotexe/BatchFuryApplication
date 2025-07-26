@@ -22,43 +22,27 @@ import java.time.LocalDate;
 @EnableBatchProcessing
 public class BatchFuryApplication implements CommandLineRunner {
 
-	private static final Logger logger = LoggerFactory.getLogger(BatchFuryApplication.class);
-
 	@Autowired
 	private JobLauncher jobLauncher;
 
 	@Autowired
-	@Qualifier("reportGenerationJob") // Nama job yang akan kita definisikan
-	private Job reportGenerationJob;
-
+	private Job processTransactionsJob;
 
 	public static void main(String[] args) {
+		System.out.println("Starting Spring Batch Application...");
 		SpringApplication.run(BatchFuryApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		logger.info("Aplikasi Spring Batch dimulai dalam mode standalone.");
-
-		// Tentukan rentang tanggal untuk laporan
-		// Ganti dengan tanggal yang Anda tahu ada datanya di DB Anda
-		LocalDate startDate = LocalDate.of(2024, 1, 1); // Contoh: 1 Januari 2024
-		LocalDate endDate = LocalDate.of(2024, 1, 31);   // Contoh: 31 Januari 2024
+		System.out.println("Executing Spring Batch Job...");
 
 		JobParameters jobParameters = new JobParametersBuilder()
-				.addLong("time", System.currentTimeMillis()) // Parameter unik untuk setiap eksekusi job
-				.addString("startDate", startDate.format(DateTimeFormatter.ISO_LOCAL_DATE))
-				.addString("endDate", endDate.format(DateTimeFormatter.ISO_LOCAL_DATE))
+				.addLong("time", System.currentTimeMillis())
 				.toJobParameters();
 
-		try {
-			logger.info("Meluncurkan reportGenerationJob untuk tanggal {} hingga {}", startDate, endDate);
-			jobLauncher.run(reportGenerationJob, jobParameters);
-			logger.info("reportGenerationJob selesai. Aplikasi akan mati.");
-		} catch (Exception e) {
-			logger.error("reportGenerationJob gagal", e);
-		} finally {
-			System.exit(0); // Penting: Keluar dari aplikasi setelah job selesai atau gagal
-		}
+		jobLauncher.run(processTransactionsJob, jobParameters);
+
+		System.out.println("Spring Batch Job completed!");
 	}
 }
