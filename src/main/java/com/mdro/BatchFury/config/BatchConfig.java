@@ -1,8 +1,12 @@
 package com.mdro.BatchFury.config;
 
 
+import com.mdro.BatchFury.listener.ChunkProgressListener;
+import com.mdro.BatchFury.listener.JobCompletionNotificationListener;
+import com.mdro.BatchFury.listener.StepExecutionInfoListener;
 import com.mdro.BatchFury.model.Transaction;
 import com.mdro.BatchFury.processor.TransactionItemProcessor;
+import com.mdro.BatchFury.writer.ReportWriter;
 import com.mdro.BatchFury.writer.TransactionItemWriter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -12,6 +16,7 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.RowMapper;
@@ -34,6 +39,24 @@ public class BatchConfig {
     @Autowired
     private TransactionItemWriter writer;
 
+    @Value("${batch.chunk-size:500}")
+    private int chunkSize;
+
+    @Value("${batch.thread-pool-size:4}")
+    private int threadPoolSize;
+
+    @Autowired
+    private JobCompletionNotificationListener jobListener;
+
+    @Autowired
+    private StepExecutionInfoListener stepListener;
+
+    @Autowired
+    private ChunkProgressListener chunkListener;
+
+    @Autowired
+    private ReportWriter reportWriter;
+
     @Bean
     public JdbcCursorItemReader<Transaction> transactionReader() {
         return new JdbcCursorItemReaderBuilder<Transaction>()
@@ -50,10 +73,13 @@ public class BatchConfig {
     public Step processTransactionsStep(JobRepository jobRepository,
                                         PlatformTransactionManager transactionManager) {
         return new StepBuilder("processTransactionsStep", jobRepository)
-                .<Transaction, Transaction>chunk(10, transactionManager)
+                .<Transaction, Transaction>chunk(chunkSize, transactionManager)
                 .reader(transactionReader())
                 .processor(processor)
-                .writer(writer)
+                .listener(stepListener)
+                .listener(chunkListener)
+//                .writer(writer)
+                .writer(reportWriter.simpleReportFileWriterFromTransaction(null))
                 .build();
     }
 

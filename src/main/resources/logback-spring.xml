@@ -33,10 +33,10 @@
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="org.springframework.jdbc.core" level="DEBUG" additivity="false">
-        <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE"/>
-    </logger>
+<!--    <logger name="org.springframework.jdbc.core" level="DEBUG" additivity="false">-->
+<!--        <appender-ref ref="CONSOLE"/>-->
+<!--        <appender-ref ref="FILE"/>-->
+<!--    </logger>-->
 
     <logger name="org.springframework.integration" level="INFO" additivity="false">
         <appender-ref ref="CONSOLE"/>
