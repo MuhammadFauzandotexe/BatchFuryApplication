@@ -9,6 +9,7 @@ import com.mdro.BatchFury.model.Transaction;
 import com.mdro.BatchFury.processor.TransactionItemProcessor;
 import com.mdro.BatchFury.writer.ReportWriter;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
@@ -28,11 +29,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Configuration
+@Slf4j
 public class ExportRemoteTransactionConfig {
 
     private final DataSource remoteDatasource;
 
-    public ExportRemoteTransactionConfig(@Qualifier(DataAccessBeanNames.DataSource.LOCAL)
+    public ExportRemoteTransactionConfig(@Qualifier(DataAccessBeanNames.DataSource.REMOTE)
                                          DataSource remoteDatasource) {
         this.remoteDatasource = remoteDatasource;
     }
@@ -48,11 +50,14 @@ public class ExportRemoteTransactionConfig {
 
     @Bean(name = "remoteTransactionReader")
     public JdbcCursorItemReader<Transaction> transactionReader() {
+        String sql = "SELECT id, transaction_date, reference_number, amount, " +
+                "account_number, status, partition_date FROM transactions ORDER BY id";
+
+        log.info("SQL Reader Query (Local): {}", sql);
         return new JdbcCursorItemReaderBuilder<Transaction>()
                 .name("remoteTransactionReader")
                 .dataSource(remoteDatasource)
-                .sql("SELECT id, transaction_date, reference_number, amount, " +
-                        "account_number, status, partition_date FROM transactions ORDER BY id")
+                .sql(sql)
                 .rowMapper(new TransactionRowMapper())
                 .build();
     }
