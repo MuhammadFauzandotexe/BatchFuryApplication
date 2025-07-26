@@ -2,7 +2,6 @@ package com.mdro.BatchFury.profile;
 
 import com.mdro.BatchFury.constant.BatchBeanNames;
 import com.mdro.BatchFury.constant.DataAccessBeanNames;
-import com.mdro.BatchFury.constant.DataSourceBeanNames;
 import com.mdro.BatchFury.listener.ChunkProgressListener;
 import com.mdro.BatchFury.listener.JobCompletionNotificationListener;
 import com.mdro.BatchFury.listener.StepExecutionInfoListener;
