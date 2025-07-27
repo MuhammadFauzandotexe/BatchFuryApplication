@@ -2,9 +2,8 @@ package com.mdro.BatchFury.listener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.BatchStatus;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobExecutionListener;
+import org.springframework.batch.core.*;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -40,5 +39,7 @@ public class JobCompletionNotificationListener implements JobExecutionListener {
         }
         logger.info("End Time: {}", jobExecution.getEndTime());
         logger.info("====================");
+        String fileName = jobExecution.getExecutionContext().getString("generatedFileName", "N/A");
+        jobExecution.setExitStatus(new ExitStatus("COMPLETED", "Generated file: " + fileName));
     }
 }

@@ -60,25 +60,28 @@ public class ReportWriter {
                 .build();
     }
 
+
     @Bean
     @StepScope
-    public FlatFileItemWriter<Transaction> simpleReportFileWriterFromTransaction(
+    public ExecutionContextAwareWriter<Transaction> simpleReportFileWriterFromTransaction(
             @Value("#{jobParameters['reportDate'] ?: 'default'}") String reportDate) {
 
         String fileName = String.format("reports/transaction_report_%s.txt", reportDate);
 
         BeanWrapperFieldExtractor<Transaction> fieldExtractor = new BeanWrapperFieldExtractor<>();
-        fieldExtractor.setNames(new String[]{"id","referenceNumber", "transactionDate", "amount", "accountNumber", "status"});
+        fieldExtractor.setNames(new String[]{"id", "referenceNumber", "transactionDate", "amount", "accountNumber", "status"});
 
         DelimitedLineAggregator<Transaction> lineAggregator = new DelimitedLineAggregator<>();
         lineAggregator.setDelimiter("|");
         lineAggregator.setFieldExtractor(fieldExtractor);
 
-        return new FlatFileItemWriterBuilder<Transaction>()
+        FlatFileItemWriter<Transaction> flatWriter = new FlatFileItemWriterBuilder<Transaction>()
                 .name("simpleReportFileWriter")
                 .resource(new FileSystemResource(fileName))
                 .lineAggregator(lineAggregator)
                 .headerCallback(writer -> writer.write("ID|Reference|Date|Amount|Account|Status"))
                 .build();
+
+        return new ExecutionContextAwareWriter<>(flatWriter);
     }
 }

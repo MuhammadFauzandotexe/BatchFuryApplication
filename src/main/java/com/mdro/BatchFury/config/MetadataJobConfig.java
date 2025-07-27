@@ -2,7 +2,9 @@ package com.mdro.BatchFury.config;
 
 import com.mdro.BatchFury.constant.BatchBeanNames;
 import com.mdro.BatchFury.constant.DataSourceBeanNames;
+import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.configuration.support.MapJobRegistry;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.explore.support.JobExplorerFactoryBean;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -10,8 +12,10 @@ import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Role;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
@@ -60,4 +64,11 @@ public class MetadataJobConfig {
         factory.afterPropertiesSet();
         return factory.getObject();
     }
+
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public JobRegistry jobRegistry() {
+        return new MapJobRegistry();
+    }
+
 }
