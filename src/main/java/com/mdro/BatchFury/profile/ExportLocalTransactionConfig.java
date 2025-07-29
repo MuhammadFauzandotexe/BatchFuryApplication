@@ -1,7 +1,7 @@
 package com.mdro.BatchFury.profile;
 
 import com.mdro.BatchFury.constant.BatchBeanNames;
-import com.mdro.BatchFury.constant.DataAccessBeanNames;
+import com.mdro.BatchFury.constant.DataSourceBeanNames; // PERBAIKI IMPORT INI
 import com.mdro.BatchFury.listener.ChunkProgressListener;
 import com.mdro.BatchFury.listener.JobCompletionNotificationListener;
 import com.mdro.BatchFury.listener.StepExecutionInfoListener;
@@ -28,14 +28,15 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 @Slf4j
 @Configuration
 public class ExportLocalTransactionConfig {
 
     private final DataSource localDatasource;
 
-    public ExportLocalTransactionConfig(@Qualifier(DataAccessBeanNames.DataSource.LOCAL)
-                                        DataSource localDatasource) {
+    // PERBAIKI QUALIFIER INI - GUNAKAN NAMA YANG BENAR
+    public ExportLocalTransactionConfig(@Qualifier(DataSourceBeanNames.LOCAL) DataSource localDatasource) {
         this.localDatasource = localDatasource;
     }
 
@@ -66,7 +67,7 @@ public class ExportLocalTransactionConfig {
     @Bean(name = "localProcessTransactionsStep")
     public Step localProcessTransactionsStep(
             @Qualifier(BatchBeanNames.JOB_REPOSITORY) JobRepository jobRepository,
-            @Qualifier(DataAccessBeanNames.TransactionManager.LOCAL) PlatformTransactionManager transactionManager
+            @Qualifier("localTransactionManager") PlatformTransactionManager transactionManager // PERBAIKI NAMA INI
     ) {
         return new StepBuilder("localProcessTransactionsStep", jobRepository)
                 .<Transaction, Transaction>chunk(chunkSize, transactionManager)

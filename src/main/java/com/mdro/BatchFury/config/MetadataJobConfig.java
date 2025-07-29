@@ -13,15 +13,21 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.boot.autoconfigure.batch.JobLauncherApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Role;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor;
 
 import javax.sql.DataSource;
+
 @Configuration
-@EnableBatchProcessing
+@EnableBatchProcessing // PASTIKAN ANOTASI INI ADA DI SINI DAN HANYA DI SINI
 public class MetadataJobConfig {
 
     private final DataSource metadataDataSource;
@@ -46,12 +52,20 @@ public class MetadataJobConfig {
         return factory.getObject();
     }
 
+    @Bean
+    @Primary
+    public TaskExecutor taskExecutor() {
+        return new SimpleAsyncTaskExecutor();
+    }
+
     @Bean(name = BatchBeanNames.JOB_LAUNCHER)
     public JobLauncher jobLauncher(
-            @Qualifier(BatchBeanNames.JOB_REPOSITORY) JobRepository jobRepository
+            @Qualifier(BatchBeanNames.JOB_REPOSITORY) JobRepository jobRepository,
+            TaskExecutor taskExecutor
     ) throws Exception {
         SimpleJobLauncher launcher = new SimpleJobLauncher();
         launcher.setJobRepository(jobRepository);
+        launcher.setTaskExecutor(taskExecutor);
         launcher.afterPropertiesSet();
         return launcher;
     }
@@ -71,4 +85,21 @@ public class MetadataJobConfig {
         return new MapJobRegistry();
     }
 
+    // PASTIKAN ADA KATA KUNCI 'static' DI SINI
+    @Bean
+    public static JobRegistryBeanPostProcessor jobRegistryBeanPostProcessor(JobRegistry jobRegistry) {
+        JobRegistryBeanPostProcessor postProcessor = new JobRegistryBeanPostProcessor();
+        postProcessor.setJobRegistry(jobRegistry);
+        return postProcessor;
+    }
+
+    @Bean
+    public JobLauncherApplicationRunner jobLauncherApplicationRunner(
+            JobLauncher jobLauncher,
+            JobExplorer jobExplorer,
+            JobRepository jobRepository
+    ) {
+        JobLauncherApplicationRunner runner = new JobLauncherApplicationRunner(jobLauncher, jobExplorer, jobRepository);
+        return runner;
+    }
 }
