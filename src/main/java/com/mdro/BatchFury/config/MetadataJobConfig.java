@@ -8,7 +8,7 @@ import org.springframework.batch.core.configuration.support.MapJobRegistry;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.explore.support.JobExplorerFactoryBean;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.launch.support.SimpleJobLauncher;
+//import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -56,17 +56,17 @@ public class MetadataJobConfig {
         return new SimpleAsyncTaskExecutor();
     }
 
-    @Bean(name = BatchBeanNames.JOB_LAUNCHER)
-    public JobLauncher jobLauncher(
-            @Qualifier(BatchBeanNames.JOB_REPOSITORY) JobRepository jobRepository,
-            TaskExecutor taskExecutor
-    ) throws Exception {
-        SimpleJobLauncher launcher = new SimpleJobLauncher();
-        launcher.setJobRepository(jobRepository);
-        launcher.setTaskExecutor(taskExecutor);
-        launcher.afterPropertiesSet();
-        return launcher;
-    }
+//    @Bean(name = BatchBeanNames.JOB_LAUNCHER)
+//    public JobLauncher jobLauncher(
+//            @Qualifier(BatchBeanNames.JOB_REPOSITORY) JobRepository jobRepository,
+//            TaskExecutor taskExecutor
+//    ) throws Exception {
+//        SimpleJobLauncher launcher = new SimpleJobLauncher();
+//        launcher.setJobRepository(jobRepository);
+//        launcher.setTaskExecutor(taskExecutor);
+//        launcher.afterPropertiesSet();
+//        return launcher;
+//    }
 
     @Bean(name = BatchBeanNames.JOB_EXPLORER)
     public JobExplorer jobExplorer() throws Exception {
