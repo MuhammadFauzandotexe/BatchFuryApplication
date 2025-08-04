@@ -1,0 +1,90 @@
+"Tasklet" dalam Spring Batch adalah sebuah konsep sederhana untuk menjalankan operasi berulang (repetitive) dalam sebuah step (langkah) tanpa perlu menggunakan ItemReader-ItemProcessor-ItemWriter yang biasanya digunakan untuk pemrosesan data berbasis chunk.
+
+Apa Itu Tasklet?
+Tasklet adalah interface di Spring Batch yang memiliki satu metode utama:
+
+java
+RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception;
+Tasklet cocok digunakan untuk:
+
+Operasi sederhana yang tidak memerlukan pembacaan dan penulisan data dalam jumlah besar (non-chunk oriented).
+
+Tugas seperti:
+
+Membersihkan file/file temporer
+
+Memanggil API eksternal
+
+Menjalankan skrip SQL
+
+Mengirim email
+
+Memindahkan file
+
+Contoh Implementasi Tasklet
+Berikut contoh sederhana Tasklet untuk menulis log:
+
+java
+import org.springframework.batch.core.StepContribution;
+import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.stereotype.Component;
+
+@Component
+public class SimpleLogTasklet implements Tasklet {
+
+    @Override
+    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+        System.out.println("Tasklet ini dijalankan!");
+        return RepeatStatus.FINISHED; // Menandakan tasklet selesai
+    }
+}
+Cara Menggunakan Tasklet dalam Step
+Tasklet bisa diatur dalam konfigurasi job seperti ini:
+
+java
+@Configuration
+public class BatchJobConfig {
+
+    @Autowired
+    private JobRepository jobRepository;
+
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+
+    @Bean
+    public Step myTaskletStep(SimpleLogTasklet tasklet) {
+        return new StepBuilder("myTaskletStep", jobRepository)
+                .tasklet(tasklet, transactionManager) // Menggunakan Tasklet
+                .build();
+    }
+
+    @Bean
+    public Job myJob(Step myTaskletStep) {
+        return new JobBuilder("myJob", jobRepository)
+                .start(myTaskletStep)
+                .build();
+    }
+}
+Perbedaan Tasklet vs Chunk-Oriented Processing
+Tasklet	Chunk Processing
+Cocok untuk operasi sederhana	Cocok untuk pemrosesan data besar
+Tidak menggunakan ItemReader, ItemProcessor, ItemWriter	Menggunakan ItemReader-Processor-Writer
+Eksekusi sekali per step	Memproses data per chunk (misal: 100 record sekaligus)
+Contoh: Hapus file, panggil API	Contoh: Import CSV ke database
+Kapan Menggunakan Tasklet?
+Operasi Tunggal (seperti mengosongkan folder sebelum memproses data).
+
+Tugas Non-Data-Intensive (seperti mengirim notifikasi).
+
+Step Awal/Akhir (seperti setup/cleanup).
+
+Kesimpulan
+Tasklet adalah cara sederhana untuk menjalankan operasi dalam Spring Batch tanpa chunk processing.
+
+Berguna untuk tugas-tugas yang tidak memerlukan pembacaan dan penulisan data dalam jumlah besar.
+
+Bisa digunakan bersama chunk-oriented step dalam job yang sama.
+
+Jika Anda perlu contoh lebih lanjut (misal: Tasklet untuk menghapus file, memindahkan data, atau eksekusi SQL), beri tahu saya! 🚀

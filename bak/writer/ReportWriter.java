@@ -1,6 +1,5 @@
 package com.mdro.BatchFury.writer;
 
-import com.mdro.BatchFury.model.ReportData;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;

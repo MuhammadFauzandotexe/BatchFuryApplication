@@ -1,16 +1,9 @@
 package com.mdro.BatchFury.configuration;
 
 
-import com.mdro.BatchFury.listener.ChunkProgressListener;
-import com.mdro.BatchFury.listener.JobCompletionNotificationListener;
 import com.mdro.BatchFury.listener.RetryInfoListener;
-import com.mdro.BatchFury.listener.StepExecutionInfoListener;
 
-import com.mdro.BatchFury.model.ReportData;
-import com.mdro.BatchFury.model.Transaction;
 import com.mdro.BatchFury.proccesor.TransactionProcessor;
-import com.mdro.BatchFury.reader.TransactionReader;
-import com.mdro.BatchFury.writer.ReportWriter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 //import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;

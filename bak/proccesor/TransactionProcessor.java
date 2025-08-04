@@ -1,7 +1,5 @@
 package com.mdro.BatchFury.proccesor;
 
-import com.mdro.BatchFury.model.ReportData;
-import com.mdro.BatchFury.model.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;

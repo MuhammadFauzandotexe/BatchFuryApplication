@@ -1,0 +1,21 @@
+2025-08-05 00:36:43.014 [main] INFO  [JOB:data-migration-job] c.m.BatchFury.BatchFuryApplication - Starting BatchFuryApplication v0.0.1-SNAPSHOT using Java 17.0.14 with PID 7104 (D:\Project\BatchFury\target\BatchFury-0.0.1-SNAPSHOT.jar started by mfauz in D:\Project\BatchFury)
+2025-08-05 00:36:43.016 [main] INFO  [JOB:data-migration-job] c.m.BatchFury.BatchFuryApplication - The following 1 profile is active: "data-migration"
+2025-08-05 00:36:44.160 [main] INFO  [JOB:data-migration-job] c.m.BatchFury.BatchFuryApplication - Started BatchFuryApplication in 1.674 seconds (process running for 2.103)
+2025-08-05 00:36:44.206 [main] INFO  [JOB:data-migration-job] o.s.b.c.l.s.TaskExecutorJobLauncher - Job: [SimpleJob: [name=data-migration-job]] launched with the following parameters: [{'inputFile':'{value=test, type=class java.lang.String, identifying=true}'}]
+2025-08-05 00:36:44.235 [main] INFO  [JOB:data-migration-job] c.m.B.config.DataMigrationJobConfig - File input: test
+2025-08-05 00:36:44.238 [main] INFO  [JOB:data-migration-job] c.m.B.config.DataMigrationJobConfig - Starting Data Migration Job
+2025-08-05 00:36:44.243 [main] INFO  [JOB:data-migration-job] o.s.batch.core.job.SimpleStepHandler - Executing step: [dataProcessingStep]
+2025-08-05 00:36:44.252 [main] INFO  [JOB:data-migration-job] c.m.B.tasklet.DataProcessingTasklet - Executing Data Processing Tasklet
+2025-08-05 00:36:44.252 [main] INFO  [JOB:data-migration-job] c.m.B.tasklet.DataProcessingTasklet - Processing data records...
+2025-08-05 00:36:46.266 [main] INFO  [JOB:data-migration-job] c.m.B.tasklet.DataProcessingTasklet - Data processing completed successfully
+2025-08-05 00:36:46.269 [main] INFO  [JOB:data-migration-job] o.s.batch.core.step.AbstractStep - Step: [dataProcessingStep] executed in 2s26ms
+2025-08-05 00:36:46.274 [main] INFO  [JOB:data-migration-job] o.s.batch.core.job.SimpleStepHandler - Executing step: [reportGenerationStep]
+2025-08-05 00:36:46.276 [main] INFO  [JOB:data-migration-job] c.m.B.t.ReportGenerationTasklet - Executing Report Generation Tasklet
+2025-08-05 00:36:46.276 [main] INFO  [JOB:data-migration-job] c.m.B.t.ReportGenerationTasklet - Collecting data for report...
+2025-08-05 00:36:47.283 [main] INFO  [JOB:data-migration-job] c.m.B.t.ReportGenerationTasklet - Generating report content...
+2025-08-05 00:36:49.295 [main] INFO  [JOB:data-migration-job] c.m.B.t.ReportGenerationTasklet - Formatting and saving report...
+2025-08-05 00:36:50.109 [main] INFO  [JOB:data-migration-job] c.m.B.t.ReportGenerationTasklet - Report generation completed successfully
+2025-08-05 00:36:50.111 [main] INFO  [JOB:data-migration-job] o.s.batch.core.step.AbstractStep - Step: [reportGenerationStep] executed in 3s836ms
+2025-08-05 00:36:50.113 [main] INFO  [JOB:data-migration-job] c.m.B.config.DataMigrationJobConfig - File input: test
+2025-08-05 00:36:50.114 [main] INFO  [JOB:data-migration-job] c.m.B.config.DataMigrationJobConfig - Data Migration Job completed with status: COMPLETED
+2025-08-05 00:36:50.118 [main] INFO  [JOB:data-migration-job] o.s.b.c.l.s.TaskExecutorJobLauncher - Job: [SimpleJob: [name=data-migration-job]] completed with the following parameters: [{'inputFile':'{value=test, type=class java.lang.String, identifying=true}'}] and the following status: [COMPLETED] in 5s892ms

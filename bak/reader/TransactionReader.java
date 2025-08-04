@@ -1,7 +1,6 @@
 package com.mdro.BatchFury.reader;
 
 
-import com.mdro.BatchFury.model.Transaction;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.PagingQueryProvider;
