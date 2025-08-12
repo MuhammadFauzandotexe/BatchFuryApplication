@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Profile;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-@Profile("report-generation") // Hanya aktif saat profile 'report-generation' diaktifkan
+@Profile("report-generation")
 public class ReportGenerationJobConfig {
 
     private final JobRepository jobRepository;

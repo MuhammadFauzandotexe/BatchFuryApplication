@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Profile;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-@Profile("user-import") // Hanya aktif saat profile 'user-import' diaktifkan
+@Profile("user-import")
 public class UserImportJobConfig {
 
     private final JobRepository jobRepository;
